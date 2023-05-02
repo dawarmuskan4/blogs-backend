@@ -1,28 +1,24 @@
-//server instantiation
-const express = require("express")
-const app = express()
+const express = require("express");
+const app = express();
 
-//port definition
-require("dotenv").config()
-const PORT = process.env.PORT || 4000
+require("dotenv").config();
 
+//middleware
+app.use(express.json());
+
+const blog = require("./routes/blog")
+//mount
+app.use("/api/v1", blog);
+
+const connectWithDb = require("./config/database");
+connectWithDb();
+
+//start the server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log("App is running")
+    console.log(`App is started at Port no ${PORT}`);
 })
 
-//body parser middleware
-app.use(express.json())
-
-//routes
-const blog= require("./routes/blog")
-
-app.get('/api/v1', blog)
-
-//db connection
-const connectDb = require("./config/database")
-connectDb()
-
-//default route
-app.get('/' ,(req, res) => {
-  console.log("HOME PAGE")
+app.get("/", (req,res) => {
+    res.send(`<h1>This is my homePage baby</h1>`)
 })
